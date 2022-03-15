@@ -1,4 +1,5 @@
 from typing import Optional, Any, Union
+from cbrf_requester import custom_day_request, current_day_request
 
 
 class Money:
@@ -86,6 +87,7 @@ class Money:
         ...
 
     def convert_to_currency(self):
+        ...
 
     def __repr__(self) -> str:
         return f"{__class__.__name__}, {self.value}, {self.currency}"
