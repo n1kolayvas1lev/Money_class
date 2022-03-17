@@ -48,7 +48,9 @@ def rates_parser() -> tuple[dict[str | None, float], list[str]]:
     """
     source = None
     while True:
-        command = int(input('Выберите день для получения курса валюты. 1 - сегодня, 2 - день по выбору: '))
+        print()
+        command = int(input('Выберите день для получения курса валюты. 1 - сегодня, 2 - день по выбору, '
+                            '3 - ничего не обновлять, использовать старый файл с данными: '))
         if command == 1:
             current_day_request()
             source = 'rates.xml'
@@ -57,12 +59,15 @@ def rates_parser() -> tuple[dict[str | None, float], list[str]]:
             custom_day_request()
             source = 'custom_rates.xml'
             break
+        elif command == 3:
+            source = 'rates.xml'
+            break
         else:
             continue
 
     tree = ET.parse(source)
     root = tree.getroot()
-    print(root.get('Date'))
+    print(f"Курсы валют на дату: {root.get('Date')}")
     currencies_dict = {}  # Словарь {<CharCode>: курс 1/1}.
     list_of_charcodes = []  # Список кратких наименований валюты. <CharCode>
     list_of_names = []  # Список полных наименований валюты. <Name>
