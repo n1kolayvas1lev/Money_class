@@ -1,4 +1,6 @@
 from typing import Optional
+import time
+
 
 
 class Date:
@@ -33,8 +35,9 @@ class Date:
 
     def is_valid_date(self, day: int, month: int, year: int):
         """Проверяет, является ли дата корректной"""
-
-        if 0 < day <= self.get_max_day(month, year) or 0 > month > 12 or 0 > year:
+        current_time = time.localtime()
+        if 0 < day <= self.get_max_day(month, year) and 0 < month <= 12 and 0 < year and (
+                day <= current_time.tm_mday and month <= current_time.tm_mon and year <= current_time.tm_year):
             return True
         else:
             return False
