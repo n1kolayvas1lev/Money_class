@@ -11,9 +11,15 @@ class Money:
     currencies_dict = {}
     list_of_currencies = []
 
-    def __init__(self, value: Optional[int] = None, currency: Optional[str] = None):
+    def __init__(self, value: Optional[int] = None, currency: Optional[str] = 'RUR'):
         self.value = value
         self.currency = currency
+
+    @staticmethod
+    def __show_me_your_money() -> None:
+        print('Выберите валюту для конвертации.')
+        for item in Money.list_of_currencies:
+            print(item)
 
     @classmethod
     def update_course(cls) -> None:
@@ -25,13 +31,64 @@ class Money:
         cls.currencies_dict = overwhelming_power[0]
         cls.list_of_currencies = overwhelming_power[1]
 
-    @classmethod
-    def convert_to_usd(cls):
-        ...
+    def convert_rur_to_usd(self):
+        """
+        Конвертирует рубли в USD.
+        :return: None
+        """
+        if self.currency.upper() == 'RUR':
+            self.currency = 'USD'
+            self.value /= Money.currencies_dict['USD']
+        else:
+            raise ValueError('Это нельзя превратить в доллары.')
 
-    @classmethod
-    def convert_to_currency(cls):
-        ...
+    def convert_to_rur(self) -> None:
+        """
+        Может сконвертировать НЕ рублёвый экземпляр класса Money в рублёвый,
+        если международный код присутствует в списке конвертируемых валют.
+        :return: None
+        """
+        if self.currency.upper() != 'RUR' and self.currency.upper() in Money.currencies_dict:
+            self.value *= Money.currencies_dict[self.currency.upper()]
+            self.currency = 'RUR'
+        else:
+            raise ValueError('Что-то пошло не так.')
+
+    def convert_rur_to_currency(self) -> None:
+        """
+        Преобразует рубли в выбранную валюту.
+        :return: None
+        """
+        self.__show_me_your_money()
+        while True:
+            value = str.upper(input('Трёхбуквенный международный код: '))
+            print(value)
+            if value in Money.currencies_dict:
+                self.currency = value
+                self.value /= Money.currencies_dict[value]
+                break
+            else:
+                print('Ошибка в коде или код не существует.')
+                continue
+
+    def universal_conversion(self) -> None:
+        """
+        Универсальный конвертер для валюты в валюту, основываясь на курсе рубля.
+        :return: None
+        """
+        print(f'Вы конвертируете {self.value/100} {self.currency}.')
+        self.__show_me_your_money()
+        while True:
+            value = str.upper(input('Трёхбуквенный международный код: '))
+            print(value)
+            if value in Money.currencies_dict and value != self.currency:
+                self.value *= Money.currencies_dict[self.currency.upper()]
+                self.value /= Money.currencies_dict[value]
+                self.currency = value
+                break
+            else:
+                print('Ошибка в коде или код не существует.')
+                continue
 
     def __check_type_addition_subtraction_comparison(self, other: Any) -> bool:
         """
@@ -128,8 +185,17 @@ class Money:
 
 
 if __name__ == "__main__":
-    usd = Money(312, 'usd')
-    rur = Money(510, 'usd')
+    Money.update_course()
+    usd = Money(100, 'usd')
+    print(usd)
+    usd.universal_conversion()
+    print(usd)
+    # rur = Money(100000)
+    # rur.convert_rur_to_currency()
+    # print(rur)
+    # rur.convert_to_rur()
+    # rur.convert_to_usd()
+    # print(rur)
     # print("rur", rur, type(rur))
     # print("usd", type(usd))
     # usd = usd + rur
@@ -137,6 +203,6 @@ if __name__ == "__main__":
     # usd = usd / 2.1
     # print(usd, type(usd))
     # print(usd == rur)
-    Money.update_course()
-    print(Money.currencies_dict)
-    print(Money.list_of_currencies)
+
+    # print(Money.currencies_dict)
+    # print(Money.list_of_currencies)
